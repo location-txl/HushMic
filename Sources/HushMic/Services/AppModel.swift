@@ -75,7 +75,11 @@ final class AppModel: ObservableObject {
       return "exclamationmark.triangle"
     }
 
-    return snapshot.isActive ? "mic.fill" : "mic"
+    if snapshot.isActive {
+      return autoControlEnabled ? "mic.fill" : "mic.fill.slash"
+    }
+
+    return autoControlEnabled ? "mic" : "mic.slash"
   }
 
   func deviceTitle(localizer: AppLocalizer) -> String {
