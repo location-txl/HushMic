@@ -1,0 +1,63 @@
+name: Release macOS App
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish HushMic
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build app bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+
+          APP_VERSION="$VERSION" \
+            APP_BUILD_NUMBER="$GITHUB_RUN_NUMBER" \
+            BUILD_CONFIGURATION=release \
+            ./script/build_and_run.sh --package
+
+      - name: Archive app bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+          ZIP_PATH="dist/HushMic-${VERSION}-macos.zip"
+
+          rm -f "$ZIP_PATH"
+          (cd dist && ditto -c -k --keepParent HushMic.app "HushMic-${VERSION}-macos.zip")
+          echo "ZIP_PATH=$ZIP_PATH" >> "$GITHUB_ENV"
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+          ASSET_LABEL="HushMic ${VERSION} for macOS"
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$ZIP_PATH#$ASSET_LABEL" --clobber
+          else
+            gh release create "$TAG" "$ZIP_PATH#$ASSET_LABEL" \
+              --title "HushMic ${VERSION}" \
+              --generate-notes \
+              --verify-tag
+          fi

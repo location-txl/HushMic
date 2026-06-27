@@ -1,0 +1,78 @@
+/* Menu items */
+"menu.auto_control" = "Auto Pause/Resume";
+"menu.launch_at_login" = "Launch at Login";
+"menu.language" = "Language";
+"menu.refresh" = "Refresh Status";
+"menu.authorize_accessibility" = "Authorize Accessibility";
+"menu.test_media_key" = "Test Media Key";
+"menu.version %@" = "Version %@";
+"menu.quit" = "Quit";
+
+/* Language */
+"language.automatic" = "Auto Detect";
+"language.zh_hans" = "简体中文";
+"language.english" = "English";
+
+/* Status titles */
+"status.initializing" = "Initializing";
+"status.monitor_error %@" = "Monitor Error: %@";
+"status.mic_active" = "Microphone In Use";
+"status.mic_idle" = "Microphone Idle";
+"status.no_microphone" = "No Microphone Found";
+"status.accessibility_granted" = "Accessibility Authorized";
+"status.accessibility_needed" = "Accessibility Permission Required";
+
+/* Action messages */
+"action.listening" = "Listening for microphone";
+"action.accessibility_granted" = "Accessibility permission granted";
+"action.accessibility_waiting" = "Waiting for accessibility authorization";
+"action.media_key_sent" = "Media key sent";
+"action.media_key_failed" = "Media key send failed";
+"action.auto_control_off" = "Auto control disabled";
+"action.accessibility_missing" = "Accessibility permission missing";
+"action.automation_permission_missing" = "Music app automation permission missing";
+"action.paused_player %@" = "Mic active, paused %@";
+"action.music_already_paused" = "Music already paused, skipped";
+"action.playback_unconfirmed" = "Playback not confirmed, skipped";
+"action.no_pausable_playback" = "No pausable playback detected";
+"action.pause_media_key_failed" = "Pause media key send failed";
+"action.paused" = "Mic active, playback paused";
+"action.mic_idle" = "Microphone idle";
+"action.resume_failed" = "Resume playback failed";
+"action.resumed" = "Microphone idle, playback resumed";
+"action.login_item_error %@" = "Launch at login failed: %@";
+"action.login_item_enabled" = "Launch at login enabled";
+"action.login_item_disabled" = "Launch at login disabled";
+
+/* Device */
+"device.fallback_name %lld" = "Microphone %lld";
+
+/* Permissions */
+"permission.accessibility" = "Accessibility permission";
+"permission.automation %@" = "%@ automation permission";
+"permission.window.title" = "HushMic Permissions";
+"permission.window.heading" = "Complete Permissions";
+"permission.window.message" = "HushMic needs these permissions to pause and resume playback when the microphone is in use. Continue is available only after all permissions are granted.";
+"permission.window.status_needed" = "Not authorized";
+"permission.window.status_granted" = "Authorized";
+"permission.window.authorize" = "Authorize";
+"permission.window.confirm" = "Confirm";
+"permission.window.quit" = "Quit App";
+"permission.window.all_granted" = "All permissions are complete";
+
+/* CoreAudio error contexts */
+"coreaudio.read_device_list_size" = "Read audio device list size";
+"coreaudio.read_device_list" = "Read audio device list";
+"coreaudio.read_default_output" = "Read default output device";
+"coreaudio.read_process_list" = "Read audio process list";
+"coreaudio.read_process_devices" = "Read audio process devices";
+"coreaudio.read_input_channels" = "Read input channels";
+"coreaudio.context_size %@" = "%@ size";
+"coreaudio.error %@ %lld" = "%@ failed: %lld";
+
+/* Launch at login */
+"login.still_enabled" = "Login item is still enabled";
+"login.not_registered" = "Login item registration incomplete";
+"login.requires_approval" = "Please allow HushMic in System Settings > Login Items";
+"login.not_found" = "Current app bundle cannot be registered as login item";
+"login.unknown_status" = "Unknown login item status";

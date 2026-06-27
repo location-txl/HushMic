@@ -1,0 +1,78 @@
+/* Menu items */
+"menu.auto_control" = "自动暂停/恢复";
+"menu.launch_at_login" = "开机自启";
+"menu.language" = "语言";
+"menu.refresh" = "刷新状态";
+"menu.authorize_accessibility" = "授权辅助功能";
+"menu.test_media_key" = "测试媒体键";
+"menu.version %@" = "版本 %@";
+"menu.quit" = "退出";
+
+/* Language */
+"language.automatic" = "自动检测";
+"language.zh_hans" = "简体中文";
+"language.english" = "English";
+
+/* Status titles */
+"status.initializing" = "正在初始化";
+"status.monitor_error %@" = "监听异常：%@";
+"status.mic_active" = "麦克风使用中";
+"status.mic_idle" = "麦克风空闲";
+"status.no_microphone" = "未找到麦克风";
+"status.accessibility_granted" = "辅助功能已授权";
+"status.accessibility_needed" = "需要辅助功能权限";
+
+/* Action messages */
+"action.listening" = "正在监听麦克风";
+"action.accessibility_granted" = "已获得辅助功能权限";
+"action.accessibility_waiting" = "等待辅助功能授权";
+"action.media_key_sent" = "已发送媒体键";
+"action.media_key_failed" = "媒体键发送失败";
+"action.auto_control_off" = "自动控制已关闭";
+"action.accessibility_missing" = "缺少辅助功能权限";
+"action.automation_permission_missing" = "缺少音乐应用自动化权限";
+"action.paused_player %@" = "麦克风启用，已暂停 %@";
+"action.music_already_paused" = "音乐已暂停，跳过";
+"action.playback_unconfirmed" = "未确认音乐正在播放，跳过";
+"action.no_pausable_playback" = "未检测到可暂停的播放";
+"action.pause_media_key_failed" = "暂停媒体键发送失败";
+"action.paused" = "麦克风启用，已暂停";
+"action.mic_idle" = "麦克风空闲";
+"action.resume_failed" = "恢复播放失败";
+"action.resumed" = "麦克风空闲，已恢复";
+"action.login_item_error %@" = "开机自启设置失败：%@";
+"action.login_item_enabled" = "已开启开机自启";
+"action.login_item_disabled" = "已关闭开机自启";
+
+/* Device */
+"device.fallback_name %lld" = "麦克风 %lld";
+
+/* Permissions */
+"permission.accessibility" = "辅助功能权限";
+"permission.automation %@" = "%@ 自动化权限";
+"permission.window.title" = "HushMic 权限授权";
+"permission.window.heading" = "完成权限授权";
+"permission.window.message" = "HushMic 需要以下权限才能在麦克风使用时自动暂停和恢复播放。全部完成后才能确认继续。";
+"permission.window.status_needed" = "未授权";
+"permission.window.status_granted" = "已授权";
+"permission.window.authorize" = "去授权";
+"permission.window.confirm" = "确认";
+"permission.window.quit" = "退出应用";
+"permission.window.all_granted" = "所有权限已完成";
+
+/* CoreAudio error contexts */
+"coreaudio.read_device_list_size" = "读取音频设备列表大小";
+"coreaudio.read_device_list" = "读取音频设备列表";
+"coreaudio.read_default_output" = "读取默认输出设备";
+"coreaudio.read_process_list" = "读取音频进程列表";
+"coreaudio.read_process_devices" = "读取音频进程设备";
+"coreaudio.read_input_channels" = "读取输入声道";
+"coreaudio.context_size %@" = "%@大小";
+"coreaudio.error %@ %lld" = "%@失败：%lld";
+
+/* Launch at login */
+"login.still_enabled" = "登录项仍处于开启状态";
+"login.not_registered" = "登录项未完成注册";
+"login.requires_approval" = "需要在系统设置的登录项中允许 HushMic";
+"login.not_found" = "当前应用包不可注册为登录项";
+"login.unknown_status" = "登录项状态未知";
