@@ -8,6 +8,7 @@ MIN_SYSTEM_VERSION="14.0"
 BUILD_CONFIGURATION="${BUILD_CONFIGURATION:-debug}"
 APP_VERSION="${APP_VERSION:-}"
 APP_BUILD_NUMBER="${APP_BUILD_NUMBER:-1}"
+CODESIGN_IDENTITY="${CODESIGN_IDENTITY:--}"
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DIST_DIR="$ROOT_DIR/dist"
@@ -74,6 +75,8 @@ ${VERSION_PLIST}
 </dict>
 </plist>
 PLIST
+
+codesign --force --deep --sign "$CODESIGN_IDENTITY" "$APP_BUNDLE"
 
 open_app() {
   /usr/bin/open -n "$APP_BUNDLE"

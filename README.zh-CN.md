@@ -58,6 +58,14 @@ swift build
 ./script/build_and_run.sh --verify
 ```
 
+## 安装未签名版本
+
+如果 macOS 提示应用“已损坏”，可以把 `HushMic.app` 移到 `/Applications`，然后执行：
+
+```bash
+xattr -dr com.apple.quarantine /Applications/HushMic.app
+```
+
 ## 开发命令
 
 ```bash

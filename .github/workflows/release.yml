@@ -31,6 +31,12 @@ jobs:
             BUILD_CONFIGURATION=release \
             ./script/build_and_run.sh --package
 
+      - name: Verify app signature
+        shell: bash
+        run: |
+          set -euo pipefail
+          codesign --verify --deep --strict --verbose=4 dist/HushMic.app
+
       - name: Archive app bundle
         shell: bash
         run: |

@@ -58,6 +58,14 @@ Build, package, launch, and verify the process started:
 ./script/build_and_run.sh --verify
 ```
 
+## Installing an Unsigned Build
+
+If macOS says the app is damaged, move `HushMic.app` to `/Applications`, then run:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/HushMic.app
+```
+
 ## Development Commands
 
 ```bash
