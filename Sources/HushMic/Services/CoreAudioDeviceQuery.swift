@@ -45,8 +45,17 @@ enum CoreAudioDeviceQuery {
   }
 
   static func isOutputRunning(forBundleIdentifier bundleIdentifier: String) -> Bool {
-    (try? processObjectIDs().contains { process in
-      processBundleIdentifier(process) == bundleIdentifier && isProcessRunningOutput(process)
+    isOutputRunning(forBundleIdentifiers: [bundleIdentifier])
+  }
+
+  static func isOutputRunning(forBundleIdentifiers bundleIdentifiers: [String]) -> Bool {
+    let bundleIdentifierSet = Set(bundleIdentifiers)
+    return (try? processObjectIDs().contains { process in
+      guard let bundleIdentifier = processBundleIdentifier(process) else {
+        return false
+      }
+
+      return bundleIdentifierSet.contains(bundleIdentifier) && isProcessRunningOutput(process)
     }) ?? false
   }
 
