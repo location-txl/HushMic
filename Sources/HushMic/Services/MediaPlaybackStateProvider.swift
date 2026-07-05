@@ -111,6 +111,12 @@ struct MediaKeyControllablePlayer: Equatable {
     MediaKeyControllablePlayer(
       bundleIdentifier: "com.apple.Safari",
       displayName: "Safari",
+      outputBundleIdentifiers: [
+        "com.apple.Safari",
+        "com.apple.WebKit.GPU",
+        "com.apple.WebKit.WebContent",
+        "com.apple.WebKit.WebContent.EnhancedSecurity"
+      ],
       ignoresOutputWhileInputRunning: true
     ),
     MediaKeyControllablePlayer(
