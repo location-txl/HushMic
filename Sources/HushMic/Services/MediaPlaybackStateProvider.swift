@@ -110,7 +110,8 @@ struct MediaKeyControllablePlayer: Equatable {
     MediaKeyControllablePlayer(bundleIdentifier: "app.podcast.cosmos", displayName: "小宇宙"),
     MediaKeyControllablePlayer(
       bundleIdentifier: "com.apple.Safari",
-      displayName: "Safari"
+      displayName: "Safari",
+      ignoresOutputWhileInputRunning: true
     ),
     MediaKeyControllablePlayer(
       bundleIdentifier: "com.google.Chrome",
@@ -119,7 +120,8 @@ struct MediaKeyControllablePlayer: Equatable {
         "com.google.Chrome",
         "com.google.Chrome.helper",
         "com.google.Chrome.helper.renderer"
-      ]
+      ],
+      ignoresOutputWhileInputRunning: true
     ),
     MediaKeyControllablePlayer(
       bundleIdentifier: "com.microsoft.edgemac",
@@ -128,7 +130,8 @@ struct MediaKeyControllablePlayer: Equatable {
         "com.microsoft.edgemac",
         "com.microsoft.edgemac.helper",
         "com.microsoft.edgemac.helper.renderer"
-      ]
+      ],
+      ignoresOutputWhileInputRunning: true
     ),
     MediaKeyControllablePlayer(
       bundleIdentifier: "com.brave.Browser",
@@ -137,7 +140,8 @@ struct MediaKeyControllablePlayer: Equatable {
         "com.brave.Browser",
         "com.brave.Browser.helper",
         "com.brave.Browser.helper.renderer"
-      ]
+      ],
+      ignoresOutputWhileInputRunning: true
     ),
     MediaKeyControllablePlayer(
       bundleIdentifier: "org.mozilla.firefox",
@@ -145,7 +149,8 @@ struct MediaKeyControllablePlayer: Equatable {
       outputBundleIdentifiers: [
         "org.mozilla.firefox",
         "org.mozilla.plugincontainer"
-      ]
+      ],
+      ignoresOutputWhileInputRunning: true
     ),
     MediaKeyControllablePlayer(
       bundleIdentifier: "company.thebrowser.Browser",
@@ -154,7 +159,8 @@ struct MediaKeyControllablePlayer: Equatable {
         "company.thebrowser.Browser",
         "company.thebrowser.Browser.helper",
         "company.thebrowser.Browser.helper.renderer"
-      ]
+      ],
+      ignoresOutputWhileInputRunning: true
     ),
     MediaKeyControllablePlayer(
       bundleIdentifier: "com.tabbit-ai.Tabbit",
@@ -162,7 +168,8 @@ struct MediaKeyControllablePlayer: Equatable {
       outputBundleIdentifiers: [
         "com.tabbit-ai.Tabbit",
         "com.tabbit-ai.Tabbit.helper"
-      ]
+      ],
+      ignoresOutputWhileInputRunning: true
     ),
     MediaKeyControllablePlayer(
       bundleIdentifier: "com.openai.atlas",
@@ -177,7 +184,8 @@ struct MediaKeyControllablePlayer: Equatable {
         "com.openai.atlas.web.helper",
         "com.openai.atlas.web.helper.renderer",
         "com.openai.atlas.web.helper.plugin"
-      ]
+      ],
+      ignoresOutputWhileInputRunning: true
     ),
     MediaKeyControllablePlayer(
       bundleIdentifier: "company.thebrowser.dia",
@@ -186,7 +194,8 @@ struct MediaKeyControllablePlayer: Equatable {
         "company.thebrowser.dia",
         "company.thebrowser.browser.helper",
         "company.thebrowser.browser.helper.renderer"
-      ]
+      ],
+      ignoresOutputWhileInputRunning: true
     )
   ]
 
@@ -194,23 +203,27 @@ struct MediaKeyControllablePlayer: Equatable {
   var displayName: String
   var runningBundleIdentifiers: [String]
   var outputBundleIdentifiers: [String]
+  var ignoresOutputWhileInputRunning: Bool
 
   init(
     bundleIdentifier: String,
     displayName: String,
     runningBundleIdentifiers: [String]? = nil,
-    outputBundleIdentifiers: [String]? = nil
+    outputBundleIdentifiers: [String]? = nil,
+    ignoresOutputWhileInputRunning: Bool = false
   ) {
     self.bundleIdentifier = bundleIdentifier
     self.displayName = displayName
     self.runningBundleIdentifiers = runningBundleIdentifiers ?? [bundleIdentifier]
     self.outputBundleIdentifiers = outputBundleIdentifiers ?? [bundleIdentifier]
+    self.ignoresOutputWhileInputRunning = ignoresOutputWhileInputRunning
   }
 
   static func runningOutputPlayer() -> MediaKeyControllablePlayer? {
     supportedPlayers.first { player in
       player.isRunning
         && CoreAudioDeviceQuery.isOutputRunning(forBundleIdentifiers: player.outputBundleIdentifiers)
+        && !player.isUsingInputWhileOutputShouldBeIgnored
     }
   }
 
@@ -223,6 +236,11 @@ struct MediaKeyControllablePlayer: Equatable {
 
       return runningBundleIdentifierSet.contains(bundleIdentifier)
     }
+  }
+
+  private var isUsingInputWhileOutputShouldBeIgnored: Bool {
+    ignoresOutputWhileInputRunning
+      && CoreAudioDeviceQuery.isInputRunning(forBundleIdentifiers: outputBundleIdentifiers)
   }
 }
 
