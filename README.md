@@ -58,7 +58,9 @@ Build, package, launch, and verify the process started:
 ./script/build_and_run.sh --verify
 ```
 
-## Installing an Unsigned Build
+## Install
+
+Download the latest packaged app from [GitHub Releases](https://github.com/location-txl/HushMic/releases).
 
 If macOS says the app is damaged, move `HushMic.app` to `/Applications`, then run:
 

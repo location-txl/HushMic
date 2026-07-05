@@ -58,7 +58,9 @@ swift build
 ./script/build_and_run.sh --verify
 ```
 
-## 安装未签名版本
+## 安装
+
+请先到 [GitHub Releases](https://github.com/location-txl/HushMic/releases) 下载最新打包好的应用。
 
 如果 macOS 提示应用“已损坏”，可以把 `HushMic.app` 移到 `/Applications`，然后执行：
 
