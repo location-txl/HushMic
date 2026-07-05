@@ -36,7 +36,7 @@ final class MediaPlaybackStateProvider {
       return MediaPlaybackStatus(
         state: .playing,
         player: nil,
-        mediaKeyPlayer: MediaKeyControllablePlayer.runningPlayer()
+        mediaKeyPlayer: MediaKeyControllablePlayer.runningOutputPlayer()
       )
     }
 
@@ -107,26 +107,146 @@ struct ScriptableMediaPlayer: Equatable {
 
 struct MediaKeyControllablePlayer: Equatable {
   static let supportedPlayers = [
-    MediaKeyControllablePlayer(bundleIdentifier: "app.podcast.cosmos", displayName: "小宇宙")
+    MediaKeyControllablePlayer(bundleIdentifier: "app.podcast.cosmos", displayName: "小宇宙"),
+    MediaKeyControllablePlayer(
+      bundleIdentifier: "com.apple.Safari",
+      displayName: "Safari",
+      outputBundleIdentifiers: [
+        "com.apple.Safari",
+        "com.apple.WebKit.GPU",
+        "com.apple.WebKit.WebContent",
+        "com.apple.WebKit.WebContent.EnhancedSecurity"
+      ],
+      ignoresOutputWhileInputRunning: true
+    ),
+    MediaKeyControllablePlayer(
+      bundleIdentifier: "com.google.Chrome",
+      displayName: "Chrome",
+      outputBundleIdentifiers: [
+        "com.google.Chrome",
+        "com.google.Chrome.helper",
+        "com.google.Chrome.helper.renderer"
+      ],
+      ignoresOutputWhileInputRunning: true
+    ),
+    MediaKeyControllablePlayer(
+      bundleIdentifier: "com.microsoft.edgemac",
+      displayName: "Edge",
+      outputBundleIdentifiers: [
+        "com.microsoft.edgemac",
+        "com.microsoft.edgemac.helper",
+        "com.microsoft.edgemac.helper.renderer"
+      ],
+      ignoresOutputWhileInputRunning: true
+    ),
+    MediaKeyControllablePlayer(
+      bundleIdentifier: "com.brave.Browser",
+      displayName: "Brave",
+      outputBundleIdentifiers: [
+        "com.brave.Browser",
+        "com.brave.Browser.helper",
+        "com.brave.Browser.helper.renderer"
+      ],
+      ignoresOutputWhileInputRunning: true
+    ),
+    MediaKeyControllablePlayer(
+      bundleIdentifier: "org.mozilla.firefox",
+      displayName: "Firefox",
+      outputBundleIdentifiers: [
+        "org.mozilla.firefox",
+        "org.mozilla.plugincontainer"
+      ],
+      ignoresOutputWhileInputRunning: true
+    ),
+    MediaKeyControllablePlayer(
+      bundleIdentifier: "company.thebrowser.Browser",
+      displayName: "Arc",
+      outputBundleIdentifiers: [
+        "company.thebrowser.Browser",
+        "company.thebrowser.Browser.helper",
+        "company.thebrowser.Browser.helper.renderer"
+      ],
+      ignoresOutputWhileInputRunning: true
+    ),
+    MediaKeyControllablePlayer(
+      bundleIdentifier: "com.tabbit-ai.Tabbit",
+      displayName: "Tabbit",
+      outputBundleIdentifiers: [
+        "com.tabbit-ai.Tabbit",
+        "com.tabbit-ai.Tabbit.helper"
+      ],
+      ignoresOutputWhileInputRunning: true
+    ),
+    MediaKeyControllablePlayer(
+      bundleIdentifier: "com.openai.atlas",
+      displayName: "ChatGPT Atlas",
+      runningBundleIdentifiers: [
+        "com.openai.atlas",
+        "com.openai.atlas.web"
+      ],
+      outputBundleIdentifiers: [
+        "com.openai.atlas",
+        "com.openai.atlas.web",
+        "com.openai.atlas.web.helper",
+        "com.openai.atlas.web.helper.renderer",
+        "com.openai.atlas.web.helper.plugin"
+      ],
+      ignoresOutputWhileInputRunning: true
+    ),
+    MediaKeyControllablePlayer(
+      bundleIdentifier: "company.thebrowser.dia",
+      displayName: "Dia",
+      outputBundleIdentifiers: [
+        "company.thebrowser.dia",
+        "company.thebrowser.browser.helper",
+        "company.thebrowser.browser.helper.renderer"
+      ],
+      ignoresOutputWhileInputRunning: true
+    )
   ]
 
   var bundleIdentifier: String
   var displayName: String
+  var runningBundleIdentifiers: [String]
+  var outputBundleIdentifiers: [String]
+  var ignoresOutputWhileInputRunning: Bool
 
-  static func runningPlayer() -> MediaKeyControllablePlayer? {
-    supportedPlayers.first { $0.isRunning }
+  init(
+    bundleIdentifier: String,
+    displayName: String,
+    runningBundleIdentifiers: [String]? = nil,
+    outputBundleIdentifiers: [String]? = nil,
+    ignoresOutputWhileInputRunning: Bool = false
+  ) {
+    self.bundleIdentifier = bundleIdentifier
+    self.displayName = displayName
+    self.runningBundleIdentifiers = runningBundleIdentifiers ?? [bundleIdentifier]
+    self.outputBundleIdentifiers = outputBundleIdentifiers ?? [bundleIdentifier]
+    self.ignoresOutputWhileInputRunning = ignoresOutputWhileInputRunning
   }
 
   static func runningOutputPlayer() -> MediaKeyControllablePlayer? {
     supportedPlayers.first { player in
-      player.isRunning && CoreAudioDeviceQuery.isOutputRunning(forBundleIdentifier: player.bundleIdentifier)
+      player.isRunning
+        && CoreAudioDeviceQuery.isOutputRunning(forBundleIdentifiers: player.outputBundleIdentifiers)
+        && !player.isUsingInputWhileOutputShouldBeIgnored
     }
   }
 
   var isRunning: Bool {
-    NSWorkspace.shared.runningApplications.contains { application in
-      application.bundleIdentifier == bundleIdentifier
+    let runningBundleIdentifierSet = Set(runningBundleIdentifiers)
+    return NSWorkspace.shared.runningApplications.contains { application in
+      guard let bundleIdentifier = application.bundleIdentifier else {
+        return false
+      }
+
+      return runningBundleIdentifierSet.contains(bundleIdentifier)
     }
+  }
+
+  private var isUsingInputWhileOutputShouldBeIgnored: Bool {
+    ignoresOutputWhileInputRunning
+      && CoreAudioDeviceQuery.isInputRunning(forBundleIdentifiers: outputBundleIdentifiers)
   }
 }
 

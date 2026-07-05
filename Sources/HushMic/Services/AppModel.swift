@@ -161,7 +161,7 @@ final class AppModel: ObservableObject {
       return
     }
 
-    guard permissionsReadyForPlaybackControl() else {
+    guard accessibilityReadyForPlaybackControl() else {
       return
     }
 
@@ -169,10 +169,16 @@ final class AppModel: ObservableObject {
 
     switch playbackStatus.state {
     case .some(.playing):
-      if let player = playbackStatus.player, player.pause() {
-        markPausedByApp(target: .scriptablePlayer(player))
-        lastAction = .key("action.paused_player %@", [.raw(player.displayName)])
-        return
+      if let player = playbackStatus.player {
+        guard automationReadyForPlaybackControl(player: player) else {
+          return
+        }
+
+        if player.pause() {
+          markPausedByApp(target: .scriptablePlayer(player))
+          lastAction = .key("action.paused_player %@", [.raw(player.displayName)])
+          return
+        }
       }
 
       pauseWithMediaKey(pausedPlayerName: playbackStatus.mediaKeyPlayer?.displayName)
@@ -251,7 +257,7 @@ final class AppModel: ObservableObject {
     lastAction = .key("action.resumed")
   }
 
-  private func permissionsReadyForPlaybackControl() -> Bool {
+  private func accessibilityReadyForPlaybackControl() -> Bool {
     refreshAccessibilityStatus()
 
     guard hasAccessibilityAccess else {
@@ -260,7 +266,11 @@ final class AppModel: ObservableObject {
       return false
     }
 
-    guard PermissionAuthorizationService.runningPlayersNeedingAutomationPermission().isEmpty else {
+    return true
+  }
+
+  private func automationReadyForPlaybackControl(player: ScriptableMediaPlayer) -> Bool {
+    guard PermissionAuthorizationService.hasAutomationPermission(for: player) else {
       lastAction = .key("action.automation_permission_missing")
       requestPermissionAuthorization()
       return false
