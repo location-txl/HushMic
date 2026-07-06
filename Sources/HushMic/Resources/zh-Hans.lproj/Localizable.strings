@@ -6,6 +6,7 @@
 "menu.authorize_accessibility" = "授权辅助功能";
 "menu.test_media_key" = "测试媒体键";
 "menu.version %@" = "版本 %@";
+"menu.github" = "GitHub";
 "menu.quit" = "退出";
 
 /* Language */

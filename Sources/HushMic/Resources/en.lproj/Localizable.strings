@@ -6,6 +6,7 @@
 "menu.authorize_accessibility" = "Authorize Accessibility";
 "menu.test_media_key" = "Test Media Key";
 "menu.version %@" = "Version %@";
+"menu.github" = "GitHub";
 "menu.quit" = "Quit";
 
 /* Language */

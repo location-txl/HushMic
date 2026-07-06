@@ -81,6 +81,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     menu.addItem(actionItem(title: localizer.text("menu.refresh"), action: #selector(refresh)))
     menu.addItem(actionItem(title: localizer.text("menu.authorize_accessibility"), action: #selector(authorizeAccessibility)))
     menu.addItem(actionItem(title: localizer.text("menu.test_media_key"), action: #selector(testMediaKey)))
+    menu.addItem(actionItem(title: localizer.text("menu.github"), action: #selector(openGitHub)))
     menu.addItem(.separator())
     menu.addItem(disabledItem(versionTitle()))
     menu.addItem(actionItem(title: localizer.text("menu.quit"), action: #selector(quit)))
@@ -166,6 +167,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
   @objc private func testMediaKey() {
     appModel.testPlayPause()
+  }
+
+  @objc private func openGitHub() {
+    guard let url = URL(string: "https://github.com/location-txl/HushMic") else {
+      return
+    }
+    NSWorkspace.shared.open(url)
   }
 
   @objc private func quit() {
