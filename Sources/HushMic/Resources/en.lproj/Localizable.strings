@@ -50,6 +50,7 @@
 
 /* Permissions */
 "permission.accessibility" = "Accessibility permission";
+"permission.media_library" = "Media & Apple Music permission";
 "permission.automation %@" = "%@ automation permission";
 "permission.window.title" = "HushMic Permissions";
 "permission.window.heading" = "Complete Permissions";

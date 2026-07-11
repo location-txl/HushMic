@@ -18,6 +18,7 @@ let package = Package(
         .linkedFramework("ApplicationServices"),
         .linkedFramework("CoreServices"),
         .linkedFramework("CoreAudio"),
+        .linkedFramework("MediaPlayer"),
         .linkedFramework("ServiceManagement")
       ]
     )

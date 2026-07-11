@@ -1,1 +1,2 @@
 "NSAppleEventsUsageDescription" = "Used to read Music or Spotify playback state, and pause/resume playback when the microphone is in use.";
+"NSAppleMusicUsageDescription" = "Used to access media playback information so HushMic can pause and resume media when the microphone is in use.";

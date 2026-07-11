@@ -70,6 +70,8 @@ ${VERSION_PLIST}
   <true/>
   <key>NSAppleEventsUsageDescription</key>
   <string>用于读取 Music 或 Spotify 的播放状态，并在麦克风使用时执行暂停和恢复。</string>
+  <key>NSAppleMusicUsageDescription</key>
+  <string>用于访问媒体播放信息，以便 HushMic 在麦克风使用时暂停和恢复媒体。</string>
   <key>NSPrincipalClass</key>
   <string>NSApplication</string>
 </dict>

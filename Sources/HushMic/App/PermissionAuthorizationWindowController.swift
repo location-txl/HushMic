@@ -205,6 +205,12 @@ final class PermissionAuthorizationWindowController: NSWindowController, NSWindo
       appModel.requestAccessibility()
       appModel.openAccessibilitySettings()
       refreshPermissions()
+    case .mediaLibrary:
+      PermissionAuthorizationService.requestMediaLibraryPermission { _ in
+        DispatchQueue.main.async { [weak self] in
+          self?.refreshPermissions()
+        }
+      }
     case .automation(let player):
       DispatchQueue.global(qos: .userInitiated).async {
         PermissionAuthorizationService.requestAutomationPermission(for: player)

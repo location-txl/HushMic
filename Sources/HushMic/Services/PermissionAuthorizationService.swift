@@ -1,15 +1,19 @@
 import AppKit
 import CoreServices
 import Foundation
+import MediaPlayer
 
 enum AppPermissionRequirement: Equatable {
   case accessibility
+  case mediaLibrary
   case automation(ScriptableMediaPlayer)
 
   func title(localizer: AppLocalizer) -> String {
     switch self {
     case .accessibility:
       return localizer.text("permission.accessibility")
+    case .mediaLibrary:
+      return localizer.text("permission.media_library")
     case .automation(let player):
       return localizer.text("permission.automation %@", player.displayName)
     }
@@ -24,6 +28,10 @@ final class PermissionAuthorizationService {
       permissions.append(.accessibility)
     }
 
+    if MPMediaLibrary.authorizationStatus() != .authorized {
+      permissions.append(.mediaLibrary)
+    }
+
     permissions += Self.runningPlayersNeedingAutomationPermission().map {
       .automation($0)
     }
@@ -35,9 +43,17 @@ final class PermissionAuthorizationService {
     switch permission {
     case .accessibility:
       return AccessibilityPermission.isTrusted
+    case .mediaLibrary:
+      return MPMediaLibrary.authorizationStatus() == .authorized
     case .automation(let player):
       return Self.hasAutomationPermission(for: player)
     }
+  }
+
+  static func requestMediaLibraryPermission(
+    completion: @escaping (MPMediaLibraryAuthorizationStatus) -> Void
+  ) {
+    MPMediaLibrary.requestAuthorization(completion)
   }
 
   static func runningPlayersNeedingAutomationPermission() -> [ScriptableMediaPlayer] {

@@ -50,6 +50,7 @@
 
 /* Permissions */
 "permission.accessibility" = "辅助功能权限";
+"permission.media_library" = "媒体与 Apple Music 权限";
 "permission.automation %@" = "%@ 自动化权限";
 "permission.window.title" = "HushMic 权限授权";
 "permission.window.heading" = "完成权限授权";
