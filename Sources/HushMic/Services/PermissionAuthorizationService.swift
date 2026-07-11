@@ -47,7 +47,18 @@ final class PermissionAuthorizationService {
   }
 
   static func hasAutomationPermission(for player: ScriptableMediaPlayer) -> Bool {
-    automationPermissionStatus(for: player, askUserIfNeeded: false) == noErr
+    let status = automationPermissionStatus(for: player, askUserIfNeeded: false)
+
+    if status == noErr {
+      rememberAutomationPermission(for: player)
+      return true
+    }
+
+    if status == OSStatus(procNotFound) {
+      return UserDefaults.standard.bool(forKey: automationPermissionDefaultsKey(for: player))
+    }
+
+    return false
   }
 
   @discardableResult
@@ -56,7 +67,21 @@ final class PermissionAuthorizationService {
       return false
     }
 
-    return automationPermissionStatus(for: player, askUserIfNeeded: true) == noErr
+    let granted = automationPermissionStatus(for: player, askUserIfNeeded: true) == noErr
+    if granted {
+      rememberAutomationPermission(for: player)
+    }
+    return granted
+  }
+
+  private static func automationPermissionDefaultsKey(
+    for player: ScriptableMediaPlayer
+  ) -> String {
+    "automationPermissionGranted.\(player.bundleIdentifier)"
+  }
+
+  private static func rememberAutomationPermission(for player: ScriptableMediaPlayer) {
+    UserDefaults.standard.set(true, forKey: automationPermissionDefaultsKey(for: player))
   }
 
   private static func isInstalled(_ player: ScriptableMediaPlayer) -> Bool {
