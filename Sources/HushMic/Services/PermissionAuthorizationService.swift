@@ -24,7 +24,7 @@ final class PermissionAuthorizationService {
       permissions.append(.accessibility)
     }
 
-    permissions += Self.runningPlayersNeedingAutomationPermission().map {
+    permissions += Self.installedPlayersNeedingAutomationPermission().map {
       .automation($0)
     }
 
@@ -40,9 +40,9 @@ final class PermissionAuthorizationService {
     }
   }
 
-  static func runningPlayersNeedingAutomationPermission() -> [ScriptableMediaPlayer] {
+  static func installedPlayersNeedingAutomationPermission() -> [ScriptableMediaPlayer] {
     ScriptableMediaPlayer.supportedPlayers.filter { player in
-      player.isRunning && !hasAutomationPermission(for: player)
+      isInstalled(player) && !hasAutomationPermission(for: player)
     }
   }
 
@@ -52,7 +52,52 @@ final class PermissionAuthorizationService {
 
   @discardableResult
   static func requestAutomationPermission(for player: ScriptableMediaPlayer) -> Bool {
-    automationPermissionStatus(for: player, askUserIfNeeded: true) == noErr
+    guard launchIfNeeded(player) else {
+      return false
+    }
+
+    return automationPermissionStatus(for: player, askUserIfNeeded: true) == noErr
+  }
+
+  private static func isInstalled(_ player: ScriptableMediaPlayer) -> Bool {
+    NSWorkspace.shared.urlForApplication(withBundleIdentifier: player.bundleIdentifier) != nil
+  }
+
+  private static func launchIfNeeded(_ player: ScriptableMediaPlayer) -> Bool {
+    if player.isRunning {
+      return true
+    }
+
+    guard let applicationURL = NSWorkspace.shared.urlForApplication(
+      withBundleIdentifier: player.bundleIdentifier
+    ) else {
+      return false
+    }
+
+    let semaphore = DispatchSemaphore(value: 0)
+    let lock = NSLock()
+    var launched = false
+    let configuration = NSWorkspace.OpenConfiguration()
+    configuration.activates = false
+
+    NSWorkspace.shared.openApplication(
+      at: applicationURL,
+      configuration: configuration
+    ) { _, error in
+      lock.lock()
+      launched = error == nil
+      lock.unlock()
+      semaphore.signal()
+    }
+
+    guard semaphore.wait(timeout: .now() + 5) == .success else {
+      return false
+    }
+
+    lock.lock()
+    let result = launched
+    lock.unlock()
+    return result
   }
 
   private static func automationPermissionStatus(
