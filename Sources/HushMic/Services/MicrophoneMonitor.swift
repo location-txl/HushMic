@@ -98,6 +98,10 @@ final class MicrophoneMonitor {
   }
 
   private func rebuildDeviceListeners() {
+    guard isStarted else {
+      return
+    }
+
     removeListeners(&deviceListeners)
 
     guard let devices = try? CoreAudioDeviceQuery.inputDevices() else {
@@ -126,6 +130,10 @@ final class MicrophoneMonitor {
   }
 
   private func rebuildProcessListeners() {
+    guard isStarted else {
+      return
+    }
+
     removeListeners(&processListeners)
 
     guard let processes = try? CoreAudioDeviceQuery.processObjectIDs() else {
