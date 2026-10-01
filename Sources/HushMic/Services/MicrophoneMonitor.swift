@@ -6,6 +6,7 @@ final class MicrophoneMonitor {
 
   private let queue = DispatchQueue(label: "com.location.HushMic.microphone")
   private var deviceListeners: [RegisteredAudioListener] = []
+  private var processListeners: [RegisteredAudioListener] = []
   private var systemListeners: [RegisteredAudioListener] = []
   private var pollTimer: DispatchSourceTimer?
   private var isStarted = false
@@ -23,6 +24,7 @@ final class MicrophoneMonitor {
       self.isStarted = true
       self.installSystemListeners()
       self.rebuildDeviceListeners()
+      self.rebuildProcessListeners()
       self.startPolling()
       self.publishSnapshot()
     }
@@ -33,6 +35,7 @@ final class MicrophoneMonitor {
       pollTimer?.cancel()
       pollTimer = nil
       removeListeners(&deviceListeners)
+      removeListeners(&processListeners)
       removeListeners(&systemListeners)
       isStarted = false
     }
@@ -41,6 +44,7 @@ final class MicrophoneMonitor {
   func refresh() {
     queue.async { [weak self] in
       self?.rebuildDeviceListeners()
+      self?.rebuildProcessListeners()
       self?.publishSnapshot()
     }
   }
@@ -71,6 +75,7 @@ final class MicrophoneMonitor {
 
     var processListAddress = CoreAudioDeviceQuery.processListAddress()
     let processListBlock: AudioObjectPropertyListenerBlock = { [weak self] _, _ in
+      self?.rebuildProcessListeners()
       self?.publishSnapshot()
     }
 
@@ -93,6 +98,10 @@ final class MicrophoneMonitor {
   }
 
   private func rebuildDeviceListeners() {
+    guard isStarted else {
+      return
+    }
+
     removeListeners(&deviceListeners)
 
     guard let devices = try? CoreAudioDeviceQuery.inputDevices() else {
@@ -114,6 +123,38 @@ final class MicrophoneMonitor {
         RegisteredAudioListener(
           objectID: AudioObjectID(device),
           address: runningAddress,
+          block: block
+        )
+      )
+    }
+  }
+
+  private func rebuildProcessListeners() {
+    guard isStarted else {
+      return
+    }
+
+    removeListeners(&processListeners)
+
+    guard let processes = try? CoreAudioDeviceQuery.processObjectIDs() else {
+      return
+    }
+
+    for process in processes {
+      var inputRunningAddress = CoreAudioDeviceQuery.processInputRunningAddress()
+      let block: AudioObjectPropertyListenerBlock = { [weak self] _, _ in
+        self?.publishSnapshot()
+      }
+
+      let status = AudioObjectAddPropertyListenerBlock(process, &inputRunningAddress, queue, block)
+      guard status == noErr else {
+        continue
+      }
+
+      processListeners.append(
+        RegisteredAudioListener(
+          objectID: process,
+          address: inputRunningAddress,
           block: block
         )
       )
@@ -174,7 +215,7 @@ final class MicrophoneMonitor {
     pollTimer?.cancel()
 
     let timer = DispatchSource.makeTimerSource(queue: queue)
-    timer.schedule(deadline: .now() + 0.5, repeating: 1.0)
+    timer.schedule(deadline: .now() + .milliseconds(250), repeating: .milliseconds(250))
     timer.setEventHandler { [weak self] in
       self?.publishSnapshot()
     }

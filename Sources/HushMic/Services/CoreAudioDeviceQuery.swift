@@ -120,7 +120,15 @@ enum CoreAudioDeviceQuery {
     )
   }
 
-  private static func processObjectIDs() throws -> [AudioObjectID] {
+  static func processInputRunningAddress() -> AudioObjectPropertyAddress {
+    AudioObjectPropertyAddress(
+      mSelector: kAudioProcessPropertyIsRunningInput,
+      mScope: kAudioObjectPropertyScopeGlobal,
+      mElement: kAudioObjectPropertyElementMain
+    )
+  }
+
+  static func processObjectIDs() throws -> [AudioObjectID] {
     var address = processListAddress()
     return try objectIDs(for: systemObject, address: &address, context: .key("coreaudio.read_process_list"))
   }
