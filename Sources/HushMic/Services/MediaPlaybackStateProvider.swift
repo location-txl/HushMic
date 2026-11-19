@@ -108,6 +108,7 @@ struct ScriptableMediaPlayer: Equatable {
 struct MediaKeyControllablePlayer: Equatable {
   static let supportedPlayers = [
     MediaKeyControllablePlayer(bundleIdentifier: "app.podcast.cosmos", displayName: "小宇宙"),
+    MediaKeyControllablePlayer(bundleIdentifier: "com.colliderli.iina", displayName: "IINA"),
     MediaKeyControllablePlayer(
       bundleIdentifier: "com.apple.Safari",
       displayName: "Safari",
